@@ -20,12 +20,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "debug.h"
 #include "action_layer.h"
 #include "version.h"
+#include "keymap_plover.h"
 
 #define BASE 0
 #define SYMB 1
 #define MOUS 2
 #define FNXN 3
 #define NUMP 4
+#define PLVR 5
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -52,7 +54,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYMB] = KEYMAP(  // layer 1 : function and symbol keys
         // left hand
-        KC_TRNS,KC_F1,  KC_F2,  KC_F3,  KC_F4,  KC_F5,  KC_F11,
+       TG(PLVR),KC_F1,  KC_F2,  KC_F3,  KC_F4,  KC_F5,  KC_F11,
         KC_TRNS,KC_LBRC,KC_RBRC,KC_LBRC,KC_RBRC,KC_SCLN,KC_TRNS,
         KC_TRNS,KC_BSLS,KC_SLSH,KC_9   ,KC_0   ,KC_SCLN,
         KC_TRNS,KC_1   ,KC_2   ,KC_3   ,KC_4   ,KC_5   ,KC_TRNS,
@@ -141,6 +143,7 @@ const uint16_t PROGMEM fn_actions[] = {
     [4] = ACTION_LAYER_SET(NUMP, ON_PRESS),                  // FN4 - push Layer4
     [5] = ACTION_LAYER_SET(BASE, ON_PRESS),                  // FN5 - push Layer0
     [6] = ACTION_LAYER_SET(SYMB, ON_PRESS),                  // FN6 - push Layer1
+    [6] = ACTION_LAYER_SET(PLVR, ON_PRESS),                  // FN7 - push Layer5
 };
 
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
