@@ -27,9 +27,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #include "visualizer.h"
-#include "led_test.h"
+// #include "led_test.h"
 
-static const char* welcome_text[] = {"TMK: Don Keymap", "Infinity Ergodox"};
+static const char* welcome_text[] = {"QMK: Don Keymap", "Infinity Ergodox"};
 
 // Just an example how to write custom keyframe functions, we could have moved
 // all this into the init function
@@ -118,7 +118,7 @@ void initialize_user_visualizer(visualizer_state_t* state) {
     state->current_lcd_color = LCD_COLOR(0x00, 0x00, 0xFF);
     state->target_lcd_color = LCD_COLOR(0x10, 0xFF, 0xFF);
     start_keyframe_animation(&startup_animation);
-    start_keyframe_animation(&led_test_animation);
+    //    start_keyframe_animation(&led_test_animation);
 }
 
 void update_user_visualizer_state(visualizer_state_t* state) {
@@ -130,27 +130,27 @@ void update_user_visualizer_state(visualizer_state_t* state) {
     // state->status.default_layer
     // state->status.leds (see led.h for available statuses)
     if (state->status.layer & 0x20) {
-        state->target_lcd_color = LCD_COLOR(0xC0, 0xB0, 0xFF);
+        state->target_lcd_color = LCD_COLOR(0xB0, 0xFF, 0xFF);
         state->layer_text = "Plover";
     }
-    if (state->status.layer & 0x10) {
-        state->target_lcd_color = LCD_COLOR(0xC0, 0xB0, 0xFF);
+    else if (state->status.layer & 0x10) {
+        state->target_lcd_color = LCD_COLOR(0x90, 0xFF, 0xFF);
         state->layer_text = "Numpad";
     }
     else if (state->status.layer & 0x8) {
-        state->target_lcd_color = LCD_COLOR(0, 0xB0, 0xFF);
-        state->layer_text = "KBD functions";
+        state->target_lcd_color = LCD_COLOR(0x60, 0xFF, 0xFF);
+        state->layer_text = "KBD FXNs";
     }
     else if (state->status.layer & 0x4) {
-        state->target_lcd_color = LCD_COLOR(0xD0, 0x10, 0xD0);
+        state->target_lcd_color = LCD_COLOR(0x30, 0xFF, 0xFF);
         state->layer_text = "Mouse";
     }
     else if (state->status.layer & 0x2) {
-        state->target_lcd_color = LCD_COLOR(0x80, 0xB0, 0xFF);
-        state->layer_text = "Function keys";
+        state->target_lcd_color = LCD_COLOR(0x00, 0xFF, 0xFF);
+        state->layer_text = "FXN/Symbols";
     }
     else {
-        state->target_lcd_color = LCD_COLOR(0x40, 0xB0, 0xFF);
+        state->target_lcd_color = LCD_COLOR(0x00, 0x80, 0x80);
         state->layer_text = "Default";
     }
     // You can also stop existing animations, and start your custom ones here
@@ -172,5 +172,5 @@ void user_visualizer_resume(visualizer_state_t* state) {
     state->current_lcd_color = LCD_COLOR(0x00, 0x00, 0x00);
     state->target_lcd_color = LCD_COLOR(0x10, 0xFF, 0xFF);
     start_keyframe_animation(&resume_animation);
-    start_keyframe_animation(&led_test_animation);
+    // start_keyframe_animation(&led_test_animation);
 }
