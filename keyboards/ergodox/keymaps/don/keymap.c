@@ -46,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           KC_LBRC,KC_Y,KC_U, KC_I,   KC_O,   KC_P,   KC_RBRC,
                   KC_H,KC_J, KC_K,   KC_L,   KC_SCLN,KC_QUOT,
         TG(SYMB), KC_N,KC_M, KC_COMM,KC_DOT, KC_SLSH,KC_RSFT,
-                      KC_UP, KC_DOWN,KC_LEFT,  KC_RGHT,KC_RGUI,
+                      KC_UP, KC_DOWN,KC_LEFT,KC_RGHT,KC_RGUI,
         KC_DEL,KC_RGUI,
         KC_PGUP,
         KC_PGDN,KC_ENT, KC_SPC
@@ -66,7 +66,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
              KC_F12, KC_F6,  KC_F7,  KC_F8,  KC_F9,  KC_F10, KC_PWR ,
              KC_TRNS,KC_TRNS,KC_EQL ,KC_EQL ,KC_MINS,KC_MINS,KC_VOLU,
                      KC_LEFT,KC_DOWN,KC_UP  ,KC_RGHT,KC_TRNS,KC_VOLD,
-             KC_FN5 ,KC_6   ,KC_7   ,KC_8   ,KC_9   ,KC_0   ,KC_MUTE,
+             KC_TRNS,KC_6   ,KC_7   ,KC_8   ,KC_9   ,KC_0   ,KC_MUTE,
                      KC_MRWD,KC_MSTP,KC_MPLY,KC_MPRV,KC_MNXT,
         KC_TRNS,KC_TRNS,
         KC_TRNS,
@@ -95,20 +95,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [FNXN] = KEYMAP(  // layer 3 : keyboard functions
         // left hand
-        RESET,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
-        KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_FN5,
+        RESET,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_FN0,
+        KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_FN0,
         KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
-        KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_FN5,
+        KC_TRNS,BL_TOGG,BL_STEP,BL_OFF,BL_ON,KC_TRNS,KC_FN0,
         KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
                                       KC_TRNS,KC_TRNS,
                                            KC_TRNS,
                                  KC_TRNS,KC_TRNS,KC_TRNS,
         // right hand
-            KC_FN5, KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
-            KC_FN5, KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+            KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+            KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
                     KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
-            KC_FN5, KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
-                       KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+            KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+                    KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
         KC_TRNS,KC_TRNS,
         KC_TRNS,
         KC_TRNS,KC_TRNS,KC_TRNS
@@ -125,25 +125,61 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                            KC_TRNS,
                                  KC_TRNS,KC_TRNS,KC_TRNS,
         // right hand
-             KC_FN5,KC_NLCK, KC_PSLS,KC_PAST,KC_PAST,KC_PMNS,KC_BSPC,
-             KC_FN5 ,KC_NO,  KC_P7,  KC_P8,  KC_P9,  KC_PMNS,KC_BSPC,
+             KC_TRNS,KC_NLCK, KC_PSLS,KC_PAST,KC_PAST,KC_PMNS,KC_BSPC,
+             KC_TRNS,KC_NO,  KC_P7,  KC_P8,  KC_P9,  KC_PMNS,KC_BSPC,
                      KC_NO,  KC_P4,  KC_P5,  KC_P6,  KC_PPLS,KC_PENT,
-             KC_FN5 ,KC_NO,  KC_P1,  KC_P2,  KC_P3,  KC_PPLS,KC_PENT,
+             KC_TRNS,KC_NO,  KC_P1,  KC_P2,  KC_P3,  KC_PPLS,KC_PENT,
                      KC_P0,  KC_PDOT,KC_SLSH,KC_PENT,KC_PENT,
         KC_TRNS,KC_TRNS,
         KC_TRNS,
         KC_TRNS,KC_TRNS,KC_TRNS
     ),
+/* Keymap 8: Steno for Plover
+ *
+ * ,--------------------------------------------------.           ,----------------------------------------
+ * |        |      |      |      |      |      | BASE |           |      |      |      |      |      |     
+ * |--------+------+------+------+------+-------------|           |------+------+------+------+------+-----
+ * |        |   #  |   #  |   #  |   #  |   #  |   #  |           |  #   |  #   |  #   |   #  |   #  |  #  
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+-----
+ * |        |      |   T  |   P  |   H  |      |------|           |------|      |  F   |   P  |   L  |  T  
+ * |--------+   S  +------+------+------+   *  |   *  |           |  *   |  *   +------+------+------+-----
+ * |        |      |   K  |   W  |   R  |      |      |           |      |      |  R   |   B  |   G  |  S  
+ * `--------+------+------+------+------+-------------'           `-------------+------+------+------+-----
+ *   |      |      |      |      |      |                                       |      |      |      |     
+ *   `----------------------------------'                                       `--------------------------
+ *                                        ,-------------.       ,-------------.
+ *                                        |      |      |       |      |      |
+ *                                 ,------|------|------|       |------+------+------.
+ *                                 |      |      |      |       |      |      |      |
+ *                                 |   A  |   O  |------|       |------|  E   |  U   |
+ *                                 |      |      |      |       |      |      |      |
+ *                                 `--------------------'       `--------------------'
+ */
+
+[PLVR] = KEYMAP(
+// left hand
+KC_TRNS,KC_NO,  KC_NO,  KC_NO,   KC_NO,  KC_NO,   KC_FN0,
+KC_NO,  PV_NUM, PV_NUM, PV_NUM,  PV_NUM, PV_NUM,  PV_NUM,
+KC_NO,  PV_LS,  PV_LT,  PV_LP,   PV_LH,  PV_STAR,
+KC_NO,  PV_LS,  PV_LK,  PV_LW,   PV_LR,  PV_STAR, PV_STAR,
+KC_NO,  KC_NO,  KC_NO,  KC_NO,   KC_NO,
+                                           KC_NO, KC_NO,
+                                                         KC_NO,
+                                           PV_A,  PV_O,  KC_NO,
+
+        // right hand
+KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+PV_NUM,  PV_NUM,  PV_NUM,  PV_NUM,  PV_NUM,  PV_NUM,  PV_NUM,
+PV_STAR, PV_RF,   PV_RP,   PV_RL,   PV_RT,   PV_RD,
+PV_STAR, PV_STAR, PV_RR,   PV_RB,   PV_RG,   PV_RS,   PV_RZ,
+KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+  KC_NO, KC_NO,
+  KC_NO,
+  KC_NO,PV_E, PV_U
+ ),
 };
 const uint16_t PROGMEM fn_actions[] = {
     [0] = ACTION_LAYER_SET(BASE, ON_PRESS),                  // FN0 - push Layer0
-    [1] = ACTION_LAYER_MOMENTARY(SYMB),                      // FN1 - switch to Layer1
-    [2] = ACTION_LAYER_SET(MOUS, ON_PRESS),                  // FN2 - push Layer2
-    [3] = ACTION_LAYER_SET(FNXN, ON_PRESS),                  // FN3 - push Layer3
-    [4] = ACTION_LAYER_SET(NUMP, ON_PRESS),                  // FN4 - push Layer4
-    [5] = ACTION_LAYER_SET(BASE, ON_PRESS),                  // FN5 - push Layer0
-    [6] = ACTION_LAYER_SET(SYMB, ON_PRESS),                  // FN6 - push Layer1
-    [6] = ACTION_LAYER_SET(PLVR, ON_PRESS),                  // FN7 - push Layer5
 };
 
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
