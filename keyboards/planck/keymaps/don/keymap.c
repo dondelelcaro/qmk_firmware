@@ -20,6 +20,7 @@ extern keymap_config_t keymap_config;
 #define _LOWER 3
 #define _RAISE 4
 #define _PLOVER 5
+#define _MOUSE 6
 #define _ADJUST 16
 
 enum planck_keycodes {
@@ -54,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {KC_TAB, KC_Q,  KC_W,   KC_E,   KC_R,  KC_T,  KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,KC_BSPC},
   {KC_LCTL,KC_A,  KC_S,   KC_D,   KC_F,  KC_G,  KC_H,   KC_J,   KC_K,   KC_L,KC_SCLN,KC_ENT },
   {KC_LSFT,KC_Z,  KC_X,   KC_C,   KC_V,  KC_B,  KC_N,   KC_M,KC_COMM, KC_DOT,KC_SLSH,KC_QUOT},
-  {LOWER, RAISE,KC_ESC,KC_LALT,KC_LGUI,KC_SPC,KC_SPC,KC_RGUI,KC_LEFT,KC_DOWN,  KC_UP,KC_RGHT}
+  {LT(_MOUSE,KC_ESC),KC_LGUI,KC_LALT,LOWER, RAISE,KC_SPC,KC_SPC,KC_RGUI,KC_LEFT,KC_DOWN,  KC_UP,KC_RGHT}
 },
 
 
@@ -70,9 +71,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_LOWER] = {
-  {KC_TILD,KC_EXLM,KC_AT,  KC_HASH,KC_DLR, KC_PERC,KC_CIRC,KC_AMPR,KC_ASTR,KC_LPRN,KC_RPRN,KC_BSPC},
-  {KC_DEL, KC_F1,  KC_F2,  KC_F3,   KC_F4,   KC_F5,  KC_F6,KC_UNDS,KC_PLUS,KC_LCBR,KC_RCBR,_______},
-  {_______,KC_F7,  KC_F8,  KC_F9,   KC_F10, KC_F11, KC_F12,_______,_______,_______,_______,KC_QUOT},
+  {KC_TILD,KC_EXLM,KC_AT,  KC_HASH, KC_DLR,KC_PERC,KC_CIRC,KC_AMPR,KC_ASTR,KC_LPRN,KC_RPRN,KC_BSPC},
+  {KC_DEL, KC_F1,  KC_F2,  KC_F3,    KC_F4,  KC_F5,  KC_F6,KC_UNDS,KC_PLUS,KC_LCBR,KC_RCBR,_______},
+  {_______,KC_F7,  KC_F8,  KC_F9,   KC_F10, KC_F11, KC_F12,_______,_______,_______,_______,KC_PIPE},
   {_______,_______,_______,_______,_______,_______,_______,_______,KC_MNXT,KC_VOLD,KC_VOLU,KC_MPLY}
 },
 
@@ -113,7 +114,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {EXT_PLV, XXXXXXX, XXXXXXX,KC_C,   KC_V,    XXXXXXX, XXXXXXX,KC_N,   KC_M,    XXXXXXX, XXXXXXX, XXXXXXX}
 },
 
-/* Adjust (Lower + Raise)
+/* Mouse layer
+ * ,-----------------------------------------------------------------------------------.
+ * |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |
+ * |------+------+------+------+------+-------------+------+------+------+------+------|
+ * |      |   S  |   T  |   P  |   H  |   *  |   *  |   F  |   P  |   L  |   T  |   D  |
+ * |------+------+------+------+------+------|------+------+------+------+------+------|
+ * |      |   S  |   K  |   W  |   R  |   *  |   *  |   R  |   B  |   G  |   S  |   Z  |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * | Exit |      |      |   A  |   O  |             |   E  |   U  |      |      |      |
+ * `-----------------------------------------------------------------------------------'
+ */
+
+[_MOUSE] = {
+  {_______,_______,_______,_______,_______,_______,KC_ACL0,_______,KC_WH_D,KC_WH_U,_______,_______},
+  {_______,KC_BTN4,KC_BTN2,KC_BTN3,KC_BTN1,_______,KC_ACL1,KC_MS_L,KC_MS_D,KC_MS_U,KC_MS_R,KC_LBRC},     
+  {_______,_______,_______,_______,_______,_______,KC_ACL2,_______,_______,_______,_______,_______},
+  {_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______}
+},
+
+/* ADJUST (Lower + Raise)
  * ,-----------------------------------------------------------------------------------.
  * |      | Reset|      |      |      |      |      |      |      |      |      |  Del |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
