@@ -27,7 +27,7 @@ dfu-util: $(BUILD_DIR)/$(TARGET).bin sizeafter
 	  fi; \
 	  sleep 0.1; \
 	done;
-	sudo dfu-util -D $(BUILD_DIR)/$(TARGET).bin
+	sudo dfu-util --device DFU -D $(BUILD_DIR)/$(TARGET).bin
 
 
 ifndef QUANTUM_DIR
