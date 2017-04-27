@@ -1,5 +1,5 @@
 /*
-Copyright 2016 Fred Sundvik <fsundvik@gmail.com>
+Copyright 2017 Fred Sundvik
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -130,47 +130,27 @@ void update_user_visualizer_state(visualizer_state_t* state) {
     // state->status.default_layer
     // state->status.leds (see led.h for available statuses)
     if (state->status.layer & 0x20) {
-        state->target_lcd_color = LCD_COLOR(0xB0, 0xFF, 0xFF);
-        state->layer_text = "Plover";
+      state->target_lcd_color = LCD_COLOR(0xB0, saturation, 0xFF);
+      state->layer_text = "Plover";
     }
     else if (state->status.layer & 0x10) {
-        state->target_lcd_color = LCD_COLOR(0x90, 0xFF, 0xFF);
-        state->layer_text = "Numpad";
+      state->target_lcd_color = LCD_COLOR(0x90, saturation, 0xFF);
+      state->layer_text = "Numpad";
     }
     else if (state->status.layer & 0x8) {
-        state->target_lcd_color = LCD_COLOR(0x60, 0xFF, 0xFF);
-        state->layer_text = "KBD FXNs";
+      state->target_lcd_color = LCD_COLOR(0x60, saturation, 0xFF);
+      state->layer_text = "KBD FXNs";
     }
     else if (state->status.layer & 0x4) {
-        state->target_lcd_color = LCD_COLOR(0x30, 0xFF, 0xFF);
+        state->target_lcd_color = LCD_COLOR(0x30, saturation, 0xFF);
         state->layer_text = "Mouse";
     }
     else if (state->status.layer & 0x2) {
-        state->target_lcd_color = LCD_COLOR(0x00, 0xFF, 0xFF);
+      state->target_lcd_color = LCD_COLOR(0x00, saturation, 0xFF);
         state->layer_text = "FXN/Symbols";
     }
     else {
-        state->target_lcd_color = LCD_COLOR(0x00, 0x80, 0x80);
-        state->layer_text = "Default";
+      state->target_lcd_color = LCD_COLOR(0x00, saturation, 0x80);
+      state->layer_text = "Default";
     }
-    // You can also stop existing animations, and start your custom ones here
-    // remember that you should normally have only one animation for the LCD
-    // and one for the background. But you can also combine them if you want.
-    start_keyframe_animation(&lcd_animation);
-    start_keyframe_animation(&color_animation);
-}
-
-void user_visualizer_suspend(visualizer_state_t* state) {
-    state->layer_text = "Suspending...";
-    uint8_t hue = LCD_HUE(state->current_lcd_color);
-    uint8_t sat = LCD_SAT(state->current_lcd_color);
-    state->target_lcd_color = LCD_COLOR(hue, sat, 0);
-    start_keyframe_animation(&suspend_animation);
-}
-
-void user_visualizer_resume(visualizer_state_t* state) {
-    state->current_lcd_color = LCD_COLOR(0x00, 0x00, 0x00);
-    state->target_lcd_color = LCD_COLOR(0x10, 0xFF, 0xFF);
-    start_keyframe_animation(&resume_animation);
-    // start_keyframe_animation(&led_test_animation);
 }
