@@ -206,3 +206,43 @@ void matrix_init_user(void) {
 void matrix_scan_user(void) {
 
 };
+
+// if this is my ergodox ez, I have left LEDs.
+#ifdef LEFT_LEDS
+
+extern bool ergodox_left_led_1;
+extern bool ergodox_left_led_2;
+extern bool ergodox_left_led_3;
+
+
+uint8_t ergodox_left_leds_update(void) {
+    if (mcp23018_status) { // if there was an error
+        return mcp23018_status;
+    }
+#define LEFT_LED_1_SHIFT        7       // in MCP23018 port B
+#define LEFT_LED_2_SHIFT        6       // in MCP23018 port B
+#define LEFT_LED_3_SHIFT        7       // in MCP23018 port A
+
+    // set logical value (doesn't matter on inputs)
+    // - unused  : hi-Z : 1
+    // - input   : hi-Z : 1
+    // - driving : hi-Z : 1
+    mcp23018_status = i2c_start(I2C_ADDR_WRITE);
+    if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(OLATA);
+    if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b11111111
+                                & ~(ergodox_left_led_3<<LEFT_LED_3_SHIFT)
+                                );
+    if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b11111111
+                                & ~(ergodox_left_led_2<<LEFT_LED_2_SHIFT)
+                                & ~(ergodox_left_led_1<<LEFT_LED_1_SHIFT)
+                                );
+    if (mcp23018_status) goto out;
+
+ out:
+    i2c_stop();
+    return mcp23018_status;
+}
+#endif
