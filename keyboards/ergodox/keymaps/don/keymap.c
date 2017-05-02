@@ -204,7 +204,25 @@ void matrix_init_user(void) {
 
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
-
+#ifdef LEFT_LEDS
+   uint8_t layer = biton32(layer_state);
+   switch (layer) {
+     // TODO: Make this relevant to the ErgoDox EZ.
+   case SYMB:
+     ergodox_left_led_1_on();
+     break;
+   case MOUS:
+     ergodox_left_led_2_on();
+     break;
+   default:
+     ergodox_left_led_1_off();
+     ergodox_left_led_2_off();
+     ergodox_left_led_3_off();
+     // none
+     break;
+   }
+#endif
+  
 };
 
 // if this is my ergodox ez, I have left LEDs.

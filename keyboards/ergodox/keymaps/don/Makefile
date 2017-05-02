@@ -21,6 +21,7 @@ LCD_BACKLIGHT_ENABLE = yes
 LCD_ENABLE = yes
 else
 OPT_DEFS+= -DLEFT_LEDS
+RGBLIGHT_ENABLE = no
 endif
 
 dfu-util: $(BUILD_DIR)/$(TARGET).bin sizeafter
