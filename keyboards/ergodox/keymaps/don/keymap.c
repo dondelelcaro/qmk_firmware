@@ -210,14 +210,23 @@ void matrix_scan_user(void) {
      // TODO: Make this relevant to the ErgoDox EZ.
    case SYMB:
      ergodox_left_led_1_on();
+     ergodox_right_led_1_on();
      break;
    case MOUS:
      ergodox_left_led_2_on();
+     ergodox_right_led_2_on();
+     break;
+   case NUMP:
+     ergodox_left_led_3_on();
+     ergodox_right_led_3_on();
      break;
    default:
      ergodox_left_led_1_off();
      ergodox_left_led_2_off();
      ergodox_left_led_3_off();
+     ergodox_right_led_1_off();
+     ergodox_right_led_2_off();
+     ergodox_right_led_3_off();
      // none
      break;
    }
