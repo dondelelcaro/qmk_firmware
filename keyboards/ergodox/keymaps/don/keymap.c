@@ -206,6 +206,12 @@ void matrix_init_user(void) {
 void matrix_scan_user(void) {
 #ifdef LEFT_LEDS
    uint8_t layer = biton32(layer_state);
+   ergodox_left_led_1_off();
+   ergodox_left_led_2_off();
+   ergodox_left_led_3_off();
+   ergodox_right_led_1_off();
+   ergodox_right_led_2_off();
+   ergodox_right_led_3_off();
    switch (layer) {
      // TODO: Make this relevant to the ErgoDox EZ.
    case SYMB:
@@ -219,15 +225,6 @@ void matrix_scan_user(void) {
    case NUMP:
      ergodox_left_led_3_on();
      ergodox_right_led_3_on();
-     break;
-   default:
-     ergodox_left_led_1_off();
-     ergodox_left_led_2_off();
-     ergodox_left_led_3_off();
-     ergodox_right_led_1_off();
-     ergodox_right_led_2_off();
-     ergodox_right_led_3_off();
-     // none
      break;
    }
 #endif
