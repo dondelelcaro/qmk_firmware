@@ -8,20 +8,23 @@ EXTRAKEY_ENABLE = yes       # Audio control and System control(+450)
 CONSOLE_ENABLE = no         # Console for debug(+400)
 COMMAND_ENABLE = yes        # Commands for debug and configuration
 NKRO_ENABLE = yes           # Nkey Rollover - if this doesn't work, see here: https://github.com/tmk/tmk_keyboard/wiki/FAQ#nkro-doesnt-work
-BACKLIGHT_ENABLE = no       # Enable keyboard backlight functionality
 MIDI_ENABLE = no            # MIDI controls
 AUDIO_ENABLE = no           # Audio output on port C6
 UNICODE_ENABLE = yes         # Unicode
 BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
 RGBLIGHT_ENABLE = no        # Enable WS2812 RGB underlight.  Do not enable this with audio at the same time.
 SLEEP_LED_ENABLE = no       # Breathing sleep LED during USB suspend
-ifeq ($(SUBPROJECT_DIR),'infinity')
+ifeq ($(strip $(KEYBOARD)),ergodox_infinity)
 VISUALIZER_ENABLE = yes
 LCD_BACKLIGHT_ENABLE = yes
+BACKLIGHT_ENABLE = yes
 LCD_ENABLE = yes
+# ifndef QUANTUM_DIR
+# 	include ../../../../Makefile
+# endif
 else
 OPT_DEFS+= -DLEFT_LEDS
-RGBLIGHT_ENABLE = no
+BACKLIGHT_ENABLE = no       # Enable keyboard backlight functionality
 endif
 
 dfu-util: $(BUILD_DIR)/$(TARGET).bin sizeafter
@@ -35,6 +38,3 @@ dfu-util: $(BUILD_DIR)/$(TARGET).bin sizeafter
 	sudo dfu-util --device DFU -D $(BUILD_DIR)/$(TARGET).bin
 
 
-ifndef QUANTUM_DIR
-	include ../../../../Makefile
-endif

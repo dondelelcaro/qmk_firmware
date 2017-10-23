@@ -27,7 +27,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #include "visualizer.h"
+#include "visualizer_keyframes.h"
+#include "lcd_keyframes.h"
+#include "lcd_backlight_keyframes.h"
+#include "led_backlight_keyframes.h"
+#include "system/serial_link.h"
+// #include "default_animations.h"
 // #include "led_test.h"
+
+static bool keyframe_enable(keyframe_animation_t* animation, visualizer_state_t* state);
+static bool keyframe_fade_in(keyframe_animation_t* animation, visualizer_state_t* state);
 
 static const char* welcome_text[] = {"QMK: Don Keymap", "Infinity Ergodox"};
 
@@ -46,70 +55,121 @@ bool display_welcome(keyframe_animation_t* animation, visualizer_state_t* state)
     gdispFlush();
     // you could set the backlight color as well, but we won't do it here, since
     // it's part of the following animation
-    // lcd_backlight_color(hue, saturation, intensity);
+    // lcd_backlight_color(hue, 0xFF, intensity);
     // We don't need constant updates, just drawing the screen once is enough
     return false;
 }
 
 // Feel free to modify the animations below, or even add new ones if needed
 
+static bool keyframe_enable(keyframe_animation_t* animation, visualizer_state_t* state) {
+#ifdef LCD_ENABLE
+    lcd_keyframe_enable(animation, state);
+#endif
+#ifdef LCD_BACKLIGHT_ENABLE
+    lcd_backlight_keyframe_enable(animation, state);
+#endif
+#ifdef BACKLIGHT_ENABLE
+    led_backlight_keyframe_enable(animation, state);
+#endif
+    return false;
+}
+
+static bool keyframe_disable(keyframe_animation_t* animation, visualizer_state_t* state) {
+#ifdef LCD_ENABLE
+    lcd_keyframe_disable(animation, state);
+#endif
+#ifdef LCD_BACKLIGHT_ENABLE
+    lcd_backlight_keyframe_disable(animation, state);
+#endif
+#ifdef BACKLIGHT_ENABLE
+    led_backlight_keyframe_disable(animation, state);
+#endif
+    return false;
+}
+
+static bool keyframe_fade_in(keyframe_animation_t* animation, visualizer_state_t* state) {
+    bool ret = false;
+#ifdef LCD_BACKLIGHT_ENABLE
+    ret |= lcd_backlight_keyframe_animate_color(animation, state);
+#endif
+#ifdef BACKLIGHT_ENABLE
+    ret |= led_backlight_keyframe_fade_in_all(animation, state);
+#endif
+    return ret;
+}
+
+static bool keyframe_fade_out(keyframe_animation_t* animation, visualizer_state_t* state) {
+    bool ret = false;
+#ifdef LCD_BACKLIGHT_ENABLE
+    ret |= lcd_backlight_keyframe_animate_color(animation, state);
+#endif
+#ifdef BACKLIGHT_ENABLE
+    ret |= led_backlight_keyframe_fade_out_all(animation, state);
+#endif
+    return ret;
+}
+
 // Don't worry, if the startup animation is long, you can use the keyboard like normal
 // during that time
 static keyframe_animation_t startup_animation = {
-    .num_frames = 4,
-    .loop = false,
-    .frame_lengths = {0, gfxMillisecondsToTicks(1000), gfxMillisecondsToTicks(5000), 0},
-    .frame_functions = {
-            display_welcome,
-            keyframe_animate_backlight_color,
-            keyframe_no_operation,
-            enable_visualization
-    },
-};
-
-// The color animation animates the LCD color when you change layers
-static keyframe_animation_t color_animation = {
-    .num_frames = 2,
-    .loop = false,
-    // Note that there's a 200 ms no-operation frame,
-    // this prevents the color from changing when activating the layer
-    // momentarily
-    .frame_lengths = {gfxMillisecondsToTicks(200), gfxMillisecondsToTicks(500)},
-    .frame_functions = {keyframe_no_operation, keyframe_animate_backlight_color},
-};
-
-// The LCD animation alternates between the layer name display and a
-// bitmap that displays all active layers
-static keyframe_animation_t lcd_animation = {
-    .num_frames = 2,
-    .loop = true,
-    .frame_lengths = {gfxMillisecondsToTicks(2000), gfxMillisecondsToTicks(2000)},
-    .frame_functions = {keyframe_display_layer_text, keyframe_display_layer_bitmap},
-};
-
-static keyframe_animation_t suspend_animation = {
+#if LCD_ENABLE
     .num_frames = 3,
+#else
+    .num_frames = 2,
+#endif
     .loop = false,
-    .frame_lengths = {0, gfxMillisecondsToTicks(1000), 0},
+    .frame_lengths = {
+        0, 
+#if LCD_ENABLE
+        0, 
+#endif
+        gfxMillisecondsToTicks(5000)},
     .frame_functions = {
-            keyframe_display_layer_text,
-            keyframe_animate_backlight_color,
-            keyframe_disable_lcd_and_backlight,
+            keyframe_enable,
+#if LCD_ENABLE
+            display_welcome,
+#endif
+            keyframe_fade_in,
     },
 };
 
-static keyframe_animation_t resume_animation = {
-    .num_frames = 5,
+keyframe_animation_t suspend_animation = {
+#if LCD_ENABLE
+    .num_frames = 3,
+#else
+    .num_frames = 2,
+#endif
     .loop = false,
-    .frame_lengths = {0, 0, gfxMillisecondsToTicks(1000), gfxMillisecondsToTicks(5000), 0},
+    .frame_lengths = {
+#if LCD_ENABLE
+        0, 
+#endif
+        gfxMillisecondsToTicks(1000), 
+        0},
     .frame_functions = {
-            keyframe_enable_lcd_and_backlight,
-            display_welcome,
-            keyframe_animate_backlight_color,
-            keyframe_no_operation,
-            enable_visualization,
+#if LCD_ENABLE
+            lcd_keyframe_display_layer_text,
+#endif
+            keyframe_fade_out,
+            keyframe_disable,
     },
 };
+
+void user_visualizer_suspend(visualizer_state_t* state) {
+    state->layer_text = "Suspending...";
+    uint8_t hue = LCD_HUE(state->current_lcd_color);
+    uint8_t sat = LCD_SAT(state->current_lcd_color);
+    state->target_lcd_color = LCD_COLOR(hue, sat, 0);
+    start_keyframe_animation(&suspend_animation);
+}
+
+void user_visualizer_resume(visualizer_state_t* state) {
+  state->current_lcd_color = LCD_COLOR(0,0,0);
+  state->target_lcd_color = LCD_COLOR(0,0,0xFF);
+  // initial_update = true;
+  start_keyframe_animation(&startup_animation);
+}
 
 void initialize_user_visualizer(visualizer_state_t* state) {
     // The brightness will be dynamically adjustable in the future
@@ -121,7 +181,7 @@ void initialize_user_visualizer(visualizer_state_t* state) {
     //    start_keyframe_animation(&led_test_animation);
 }
 
-void update_user_visualizer_state(visualizer_state_t* state) {
+void update_user_visualizer_state(visualizer_state_t* state, visualizer_keyboard_status_t* prev_status) {
     // Add more tests, change the colors and layer texts here
     // Usually you want to check the high bits (higher layers first)
     // because that's the order layers are processed for keypresses
@@ -130,27 +190,27 @@ void update_user_visualizer_state(visualizer_state_t* state) {
     // state->status.default_layer
     // state->status.leds (see led.h for available statuses)
     if (state->status.layer & 0x20) {
-      state->target_lcd_color = LCD_COLOR(0xB0, saturation, 0xFF);
+      state->target_lcd_color = LCD_COLOR(0xB0, 0xFF, 0xFF);
       state->layer_text = "Plover";
     }
     else if (state->status.layer & 0x10) {
-      state->target_lcd_color = LCD_COLOR(0x90, saturation, 0xFF);
+      state->target_lcd_color = LCD_COLOR(0x90, 0xFF, 0xFF);
       state->layer_text = "Numpad";
     }
     else if (state->status.layer & 0x8) {
-      state->target_lcd_color = LCD_COLOR(0x60, saturation, 0xFF);
+      state->target_lcd_color = LCD_COLOR(0x60, 0xFF, 0xFF);
       state->layer_text = "KBD FXNs";
     }
     else if (state->status.layer & 0x4) {
-        state->target_lcd_color = LCD_COLOR(0x30, saturation, 0xFF);
+        state->target_lcd_color = LCD_COLOR(0x30, 0xFF, 0xFF);
         state->layer_text = "Mouse";
     }
     else if (state->status.layer & 0x2) {
-      state->target_lcd_color = LCD_COLOR(0x00, saturation, 0xFF);
+      state->target_lcd_color = LCD_COLOR(0x00, 0xFF, 0xFF);
         state->layer_text = "FXN/Symbols";
     }
     else {
-      state->target_lcd_color = LCD_COLOR(0x00, saturation, 0x80);
+      state->target_lcd_color = LCD_COLOR(0x00, 0xFF, 0x80);
       state->layer_text = "Default";
     }
 }
